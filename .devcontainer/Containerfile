@@ -1,0 +1,43 @@
+FROM docker.io/espressif/idf:v6.0.1
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        clangd \
+        python3-pip \
+        ccache \
+        minicom \
+        usbutils \
+        gdb-multiarch \
+        tree \
+    && rm -rf /var/lib/apt/lists/*
+
+
+RUN bash -c ". /opt/esp/idf/export.sh && idf_tools.py install esp-clang"
+
+ENV IDF_PATH=/opt/esp/idf
+ENV IDF_TOOLS_PATH=/opt/esp
+ENV IDF_TARGET=esp32c3
+
+ENV IDF_TOOLCHAIN=clang
+
+ENV CCACHE_DIR=/workspace/.ccache
+ENV IDF_CCACHE_ENABLE=1
+
+
+RUN echo '. /opt/esp/idf/export.sh > /dev/null 2>&1' >> /root/.bashrc && \
+    echo '. /opt/esp/idf/export.sh > /dev/null 2>&1' >> /root/.profile
+
+RUN bash -c " \
+    ESP_CLANGD=\$(find /opt/esp/tools/esp-clang -name 'clangd' -type f 2>/dev/null | head -1); \
+    if [ -n \"\$ESP_CLANGD\" ]; then \
+        ln -sf \"\$ESP_CLANGD\" /usr/local/bin/clangd-esp; \
+        echo \"esp-clangd found: \$ESP_CLANGD\"; \
+    else \
+        echo \"using clang from the system\"; \
+    fi"
+
+WORKDIR /workspace
+
+
+RUN bash -c ". /opt/esp/idf/export.sh && idf.py --version"

@@ -1,0 +1,66 @@
+{
+  "name": "Sensor de Gás ESP32-C3 — EEL7035 (Clang)",
+
+  "build": {
+    "dockerfile": "Containerfile",
+    "context": "."
+  },
+
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/workspace",
+
+  "remoteEnv": {
+    "IDF_PATH": "/opt/esp/idf",
+    "IDF_TOOLS_PATH": "/opt/esp",
+    "IDF_TARGET": "esp32c3",
+    "IDF_TOOLCHAIN": "clang",
+    "CCACHE_DIR": "/workspace/.ccache",
+    "IDF_CCACHE_ENABLE": "1"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "wokwi.wokwi-vscode",
+        "espressif.esp-idf-extension",
+        "ms-vscode.cpptools" //only for debugging
+      ],
+      "settings": {
+        "idf.espIdfPath": "/opt/esp/idf",
+        "idf.toolsPath": "/opt/esp",
+        "idf.gitPath": "/usr/bin/git",
+        "idf.adapterTargetName": "esp32c3",
+        "idf.showOnboardingOnInit": false,
+        "idf.port": "",
+        "clangd.arguments": [
+          "--compile-commands-dir=${workspaceFolder}/build",
+          "--query-driver=/opt/esp/tools/esp-clang/*/esp-clang/bin/clang*,/opt/esp/tools/riscv32-esp-elf/*/riscv32-esp-elf/bin/riscv32-esp-elf-gcc*",
+          "--background-index",
+          "--background-index-priority=normal",
+          "--clang-tidy",
+          "--header-insertion=never",
+          "--completion-style=detailed",
+          "--function-arg-placeholders=false",
+          "--log=error"
+        ],
+        "C_Cpp.intelliSenseEngine": "disabled",
+        "C_Cpp.autocomplete": "disabled",
+        "C_Cpp.errorSquiggles": "disabled",
+        "cmake.configureOnOpen": false,
+        "[c]": {
+          "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+          "editor.tabSize": 4,
+          "editor.insertSpaces": true,
+          "editor.formatOnSave": true
+        },
+        "[cmake]": {
+          "editor.tabSize": 2
+        }
+      }
+    }
+  },
+  "postCreateCommand": "bash -c '. /opt/esp/idf/export.sh && idf.py --version && echo \"\" && echo \"── esp-clang installed in:\" && find /opt/esp/tools/esp-clang -name clang -type f 2>/dev/null && echo \"\" && echo \"Próximo passo: idf.py build  (gera o compile_commands.json para o clangd)\"'",
+
+  "remoteUser": "root"
+}

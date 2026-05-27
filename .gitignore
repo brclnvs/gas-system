@@ -1,0 +1,30 @@
+# ESP-IDF build output
+build/
+build_*_*/
+sdkconfig.old
+
+# ESP-IDF / CMake generated files
+compile_commands.json
+
+# clangd
+.cache/
+
+# ccache
+.ccache/
+
+# Python / test cache
+__pycache__/
+.pytest_cache/
+
+# VS Code local workspace config
+.vscode/
+
+# Logs
+*.log
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo

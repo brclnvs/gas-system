@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = "build/gas_system.bin"
+elf = "build/gas_system.elf"
